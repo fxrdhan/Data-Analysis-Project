@@ -54,7 +54,7 @@ from wordcloud import WordCloud
 
 # %%
 products_df = pd.read_csv(
-    "https://media.githubusercontent.com/media/fxrdhan/Data-Analytics-Project/refs/heads/main/e-commerce_public_dataset/products_dataset.csv"
+    "https://media.githubusercontent.com/media/fxrdhan/Data-Analysis-Project/refs/heads/main/e-commerce_public_dataset/products_dataset.csv"
 )
 products_df.head()
 
@@ -77,7 +77,7 @@ products_df.head()
 
 # %%
 product_category_translation_df = pd.read_csv(
-    "https://media.githubusercontent.com/media/fxrdhan/Data-Analytics-Project/refs/heads/main/e-commerce_public_dataset/product_category_name_translation.csv"
+    "https://media.githubusercontent.com/media/fxrdhan/Data-Analysis-Project/refs/heads/main/e-commerce_public_dataset/product_category_name_translation.csv"
 )
 product_category_translation_df.head()
 
@@ -96,7 +96,7 @@ product_category_translation_df.head()
 
 # %%
 order_reviews_df = pd.read_csv(
-    "https://media.githubusercontent.com/media/fxrdhan/Data-Analytics-Project/refs/heads/main/e-commerce_public_dataset/order_reviews_dataset.csv"
+    "https://media.githubusercontent.com/media/fxrdhan/Data-Analysis-Project/refs/heads/main/e-commerce_public_dataset/order_reviews_dataset.csv"
 )
 order_reviews_df.head()
 
@@ -118,7 +118,7 @@ order_reviews_df.head()
 
 # %%
 order_payments_df = pd.read_csv(
-    "https://media.githubusercontent.com/media/fxrdhan/Data-Analytics-Project/refs/heads/main/e-commerce_public_dataset/order_payments_dataset.csv"
+    "https://media.githubusercontent.com/media/fxrdhan/Data-Analysis-Project/refs/heads/main/e-commerce_public_dataset/order_payments_dataset.csv"
 )
 order_payments_df.head()
 
@@ -140,7 +140,7 @@ order_payments_df.head()
 
 # %%
 order_items_df = pd.read_csv(
-    "https://media.githubusercontent.com/media/fxrdhan/Data-Analytics-Project/refs/heads/main/e-commerce_public_dataset/order_items_dataset.csv"
+    "https://media.githubusercontent.com/media/fxrdhan/Data-Analysis-Project/refs/heads/main/e-commerce_public_dataset/order_items_dataset.csv"
 )
 order_items_df.head()
 
@@ -164,7 +164,7 @@ order_items_df.head()
 
 # %%
 geolocation_df = pd.read_csv(
-    "https://media.githubusercontent.com/media/fxrdhan/Data-Analytics-Project/refs/heads/main/e-commerce_public_dataset/geolocation_dataset.csv"
+    "https://media.githubusercontent.com/media/fxrdhan/Data-Analysis-Project/refs/heads/main/e-commerce_public_dataset/geolocation_dataset.csv"
 )
 geolocation_df.head()
 
@@ -186,7 +186,7 @@ geolocation_df.head()
 
 # %%
 customers_df = pd.read_csv(
-    "https://media.githubusercontent.com/media/fxrdhan/Data-Analytics-Project/refs/heads/main/e-commerce_public_dataset/customers_dataset.csv"
+    "https://media.githubusercontent.com/media/fxrdhan/Data-Analysis-Project/refs/heads/main/e-commerce_public_dataset/customers_dataset.csv"
 )
 customers_df.head()
 
@@ -208,7 +208,7 @@ customers_df.head()
 
 # %%
 sellers_df = pd.read_csv(
-    "https://media.githubusercontent.com/media/fxrdhan/Data-Analytics-Project/refs/heads/main/e-commerce_public_dataset/sellers_dataset.csv"
+    "https://media.githubusercontent.com/media/fxrdhan/Data-Analysis-Project/refs/heads/main/e-commerce_public_dataset/sellers_dataset.csv"
 )
 sellers_df.head()
 
@@ -229,7 +229,7 @@ sellers_df.head()
 
 # %%
 orders_df = pd.read_csv(
-    "https://media.githubusercontent.com/media/fxrdhan/Data-Analytics-Project/refs/heads/main/e-commerce_public_dataset/orders_dataset.csv"
+    "https://media.githubusercontent.com/media/fxrdhan/Data-Analysis-Project/refs/heads/main/e-commerce_public_dataset/orders_dataset.csv"
 )
 orders_df.head()
 
@@ -1851,6 +1851,12 @@ pd.DataFrame(
 ).sort_values(by="Bayesian Average Rating", ascending=False)
 
 # %%
+if isinstance(bayesian_ratings, pd.Series):
+    bayesian_ratings = bayesian_ratings.reset_index()
+    bayesian_ratings.columns = ['product_category_name', 'Bayesian Average Rating']
+
+bayesian_ratings = bayesian_ratings.sort_values('Bayesian Average Rating', ascending=False)
+
 plt.figure(figsize=(12, 6))
 
 colors = ["#CCCCCC"] * len(bayesian_ratings)
@@ -2182,7 +2188,7 @@ plt.show()
 #    Kategori bed_bath_table menjadi yang paling laris, diikuti oleh produk-produk kesehatan dan kecantikan. Ini menunjukkan bahwa konsumen cenderung lebih banyak membeli produk-produk untuk kebutuhan rumah tangga dan perawatan diri.
 # 
 # 2. Apa faktor utama yang menyebabkan pembatalan pesanan?\
-#    Faktor utama yang menyebabkan pembatalan pesanan adalah masalah pengiriman, yang mencakup 72.17% dari total alasan pembatalan. Keterlambatan pengiriman merupakan penyebab terbesar, dengan kata "delay" muncul paling sering dalam ulasan pelanggan. Selain itu, produk dengan spesifikasi teknis yang kompleks dan harga tinggi seperti "PC Gamer" juga lebih rentan dibatalkan, serta metode pembayaran dengan kartu kredit lebih sering digunakan dalam pesanan yang dibatalkan (77.7%), yang mungkin terkait dengan kemudahan pembatalan dan perilaku pembelian impulsif.
+#    Faktor utama yang menyebabkan pembatalan pesanan adalah masalah pengiriman, yang mencakup 72.17% dari total alasan pembatalan. Keterlambatan pengiriman merupakan penyebab terbesar, dengan kata "delay" muncul paling sering dalam ulasan pelanggan. Selain itu, produk dengan spesifikasi teknis yang kompleks dan harga tinggi seperti "PC Gamer" juga lebih rentan dibatalkan, serta metode pembayaran dengan kartu kredit lebih sering digunakan dalam pesanan yang dibatalkan (77.7%).
 # 
 # 3. Bagaimana pengaruh interval pengiriman terhadap tingkat kepuasan pelanggan?\
 #    Kecepatan pengiriman memiliki dampak yang signifikan terhadap kepuasan pelanggan. Pengiriman cepat (1-2 hari) menghasilkan ulasan dengan skor rata-rata tertinggi 4.50, sementara pengiriman yang memakan waktu lebih lama menyebabkan penurunan skor secara bertahap. Pengiriman 30-60 hari hanya mendapat skor rata-rata 2.26, sedangkan pengiriman lebih dari 60 hari memperoleh skor lebih rendah lagi, yaitu 2.14. Ini menunjukkan bahwa pengiriman lambat memiliki korelasi kuat dengan ulasan negatif.
@@ -2192,6 +2198,9 @@ plt.show()
 # 
 # 5. Bagaimana tren penjualan bulanan?\
 #    Terdapat lonjakan signifikan dalam penjualan pada November 2017, baik dari sisi pendapatan (1,008,127.73 dalam mata uang Brazil) maupun jumlah pesanan (8,647), yang kemungkinan besar dipicu oleh event Black Friday. Setelah itu, level penjualan cenderung stabil dan lebih tinggi dibandingkan periode sebelum November 2017, menunjukkan dampak positif dari momentum Black Friday terhadap tren penjualan bisnis.
+# 
+
+# %% [markdown]
 # 
 
 
