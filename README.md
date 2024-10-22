@@ -1,4 +1,4 @@
-# Data Analytics Project
+# Data Analysis Project
 
 This repository contains a data analytics project analyzing public e-commerce data and a Streamlit dashboard.
 
