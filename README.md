@@ -1,6 +1,6 @@
 # Data Analysis Project
 
-This repository contains a data analysis project analyzing public e-commerce data and a Streamlit dashboard.
+This repository contains a data analysis project analyzing public e-commerce data and a Streamlit dashboard.\
 View my deployed [streamlit dashboard](https://dashboardp-95sy2cdcc2winr5kkhqgbm.streamlit.app/).
 
 ## Table of Contents
