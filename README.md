@@ -77,8 +77,6 @@ macOS: [Here](https://github.com/pyenv/pyenv?tab=readme-ov-file#homebrew-in-maco
 
 ### Virtual Environment Setup
 
-Create and activate a virtual environment:
-
 #### Create virtual environment
 
 - macOS/Linux:
