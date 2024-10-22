@@ -10,7 +10,7 @@ plt.style.use("dark_background")
 
 def create_daily_orders_df(df):
     # Aggregate daily orders and revenue
-    daily_orders_df = df.resample(rule="D", on="order_date").agg(
+    daily_orders_df = df.resample(rule="D", on="order_purchase_timestamp").agg(
         {"order_id": "nunique", "price": "sum"}
     )
     daily_orders_df = daily_orders_df.reset_index()
@@ -34,12 +34,12 @@ def create_sum_order_items_df(df):
 def create_rfm_df(df):
     # Calculate RFM metrics per customer
     rfm_df = df.groupby(by="customer_id", as_index=False).agg(
-        {"order_date": "max", "order_id": "nunique", "price": "sum"}
+        {"order_purchase_timestamp": "max", "order_id": "nunique", "price": "sum"}
     )
     rfm_df.columns = ["customer_id", "max_order_timestamp", "frequency", "monetary"]
 
     rfm_df["max_order_timestamp"] = rfm_df["max_order_timestamp"].dt.date
-    recent_date = df["order_date"].dt.date.max()
+    recent_date = df["order_purchase_timestamp"].dt.date.max()
     rfm_df["recency"] = rfm_df["max_order_timestamp"].apply(
         lambda x: (recent_date - x).days
     )
@@ -50,10 +50,10 @@ def create_rfm_df(df):
 def create_daily_orders_status_df(df):
     # Create pivot table of daily order status counts
     daily_status_df = (
-        df.groupby(["order_date", "order_status"]).size().reset_index(name="count")
+        df.groupby(["order_purchase_timestamp", "order_status"]).size().reset_index(name="count")
     )
     daily_status_pivot = daily_status_df.pivot(
-        index="order_date", columns="order_status", values="count"
+        index="order_purchase_timestamp", columns="order_status", values="count"
     ).fillna(0)
     return daily_status_pivot
 
@@ -63,15 +63,15 @@ all_df = pd.read_csv(
     "https://media.githubusercontent.com/media/fxrdhan/Data-Analysis-Project/refs/heads/main/e-commerce_public_dataset/all_df_cleaned.csv"
 )
 
-datetime_columns = ["order_date", "shipping_limit_date"]
-all_df.sort_values(by="order_date", inplace=True)
+datetime_columns = ["order_purchase_timestamp", "shipping_limit_date"]
+all_df.sort_values(by="order_purchase_timestamp", inplace=True)
 all_df.reset_index(inplace=True)
 
 for column in datetime_columns:
     all_df[column] = pd.to_datetime(all_df[column])
 
-min_date = all_df["order_date"].min()
-max_date = all_df["order_date"].max()
+min_date = all_df["order_purchase_timestamp"].min()
+max_date = all_df["order_purchase_timestamp"].max()
 
 # Streamlit configuration
 st.set_page_config(layout="wide", initial_sidebar_state="expanded")
@@ -122,7 +122,7 @@ with st.sidebar:
 
 # Filter data based on date range
 main_df = all_df[
-    (all_df["order_date"] >= str(start_date)) & (all_df["order_date"] <= str(end_date))
+    (all_df["order_purchase_timestamp"] >= str(start_date)) & (all_df["order_purchase_timestamp"] <= str(end_date))
 ]
 
 # Prepare dataframes
@@ -148,7 +148,7 @@ with col2:
 # Daily orders trend plot
 fig, ax = plt.subplots(figsize=(16, 8), facecolor="#0E1117")
 ax.plot(
-    daily_orders_df["order_date"],
+    daily_orders_df["order_purchase_timestamp"],
     daily_orders_df["order_count"],
     marker="o",
     linewidth=2,
