@@ -1,7 +1,9 @@
 # Data Analysis Project
 
-This repository contains a data analysis project analyzing public e-commerce data and a Streamlit dashboard.\
-View my deployed [streamlit dashboard](https://dashboardp-95sy2cdcc2winr5kkhqgbm.streamlit.app/).
+This repository contains a data analysis project analyzing public e-commerce data and a Streamlit dashboard.
+
+View my [notebook](https://github.com/fxrdhan/Data-Analysis-Project/blob/main/notebook.ipynb).\
+View my deployed [streamlit dashboard](https://dashboardpy-dap-dicoding.streamlit.app/).
 
 ## Table of Contents
 
