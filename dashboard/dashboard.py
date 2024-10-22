@@ -109,7 +109,7 @@ st.markdown(
 
 # Sidebar configuration
 with st.sidebar:
-    st.image("https://github.com/fxrdhan/Data-Analytics-Project/blob/main/dashboard/pngwing.com.png", width=200)
+    st.image("https://github.com/fxrdhan/Data-Analytics-Project/blob/main/dashboard/pngwing.com.png?raw=true", width=200)
     start_date, end_date = st.date_input(
         label="Date Range",
         min_value=min_date,
