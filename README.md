@@ -15,7 +15,7 @@ This repository contains a data analytics project analyzing public e-commerce da
 - [Troubleshooting](#troubleshooting)
   - [Common Issues and Solutions](#common-issues-and-solutions)
 
-## Project Structure.
+## Project Structure
 
 ```bash
 .
@@ -38,7 +38,7 @@ This repository contains a data analytics project analyzing public e-commerce da
 Before running this project, ensure you have the following installed:
 
 - Git
-- pyenv (for Python version management)
+- pyenv
 - Python 3.x.x
 
 ## Setup Instructions
