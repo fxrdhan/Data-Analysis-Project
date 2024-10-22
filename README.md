@@ -2,17 +2,17 @@
 
 This repository contains a data analytics project analyzing public e-commerce data and a Streamlit dashboard.
 
-## Menu
+## Table of Contents
 
-- [Project Structure](#project-structure)
-- [Prerequisites](#prerequisites)
-- [Setup Instructions](#setup-instructions)
-  - [Clone the Repository](#1-clone-the-repository)
-  - [Python Environment Setup](#2-python-environment-setup)
-  - [Virtual Environment Setup](#3-virtual-environment-setup)
-  - [Install Dependencies](#4-install-dependencies)
-  - [Running the Dashboard](#5-running-the-dashboard)
-- [Troubleshooting](#troubleshooting)
+- **[Project Structure](#project-structure)**
+- **[Prerequisites](#prerequisites)**
+- **[Setup Instructions](#setup-instructions)**
+  - [Clone the Repository](#clone-the-repository)
+  - [Python Environment Setup](#python-environment-setup)
+  - [Virtual Environment Setup](#virtual-environment-setup)
+  - [Install Dependencies](#install-dependencies)
+  - [Running the Dashboard](#running-the-dashboard)
+- **[Troubleshooting](#troubleshooting)**
   - [Common Issues and Solutions](#common-issues-and-solutions)
 
 ## Project Structure
@@ -34,16 +34,13 @@ This repository contains a data analytics project analyzing public e-commerce da
 ```
 
 ## Prerequisites
-
-Before running this project, ensure you have the following installed:
-
-- Git
-- pyenv
-- Python 3.x.x
+- [Git](https://git-scm.com/downloads)
+- [pyenv](https://github.com/pyenv/pyenv)
+- Python3
 
 ## Setup Instructions
 
-### 1. Clone the Repository
+### Clone the Repository
 
 Clone this repository to local machine.
 
@@ -52,88 +49,72 @@ git clone https://github.com/fxrdhan/Data-Analytics-Project.git
 cd Data-Analytics-Project
 ```
 
-### 2. Python Environment Setup
+### Python Environment Setup
 
-This project uses pyenv for Python version management. Follow these steps to set up the environment:
+#### Install pyenv (if not already installed)
 
-1. Install pyenv (if not already installed)
+Linux:
+    
+```bash
+curl https://pyenv.run | bash
+```
+Windows: [Here](https://github.com/pyenv-win/pyenv-win)
 
-   Linux :
+macOS: [Here](https://github.com/pyenv/pyenv?tab=readme-ov-file#homebrew-in-macos)
+   
+#### Set up shell environment for Pyenv
+[Here](https://github.com/pyenv/pyenv?tab=readme-ov-file#set-up-your-shell-environment-for-pyenv)
 
-   ```bash
-   curl https://pyenv.run | bash
-   ```
+#### Install Python3 version
+[Here](https://github.com/pyenv/pyenv?tab=readme-ov-file#install-additional-python-versions)
 
-   Windows (using Powershell:
-
-   ```bash
-   Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
-   ```
-
-   macOS (using Homebrew):
-
-   ```bash
-   brew install pyenv
-   ```
-2. Configure your shell environment:
-
-   For macOS/Linux (bash), add to `~/.bashrc`, if use zsh add to `~/.zshrc`:
-
-   ```txt
-   export PYENV_ROOT="$HOME/.pyenv"
-   command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-   eval "$(pyenv init -)"
-   ```
-
-   For Windows, environment variables are automatically set by the installer.
-
-   Restart your terminal for changes to take effect.
-3. Install Python 3.x.x:
-
-   List all available Python versions:
-
-   ```bash
-   pyenv install --list | grep " 3\."
-   ```
-
-   Install Python (choose the latest stable version):
-
-   ```bash
-   pyenv install 3.x.x
-   ```
-
-   Verify installation:
-
-   ```bash
-   python --version  # Should show installed Python version
-   ```
-4. Set local Python version:
-
-   ```bash
-   pyenv local 3.x.x
-   ```
-
-### 3. Virtual Environment Setup
+### Virtual Environment Setup
 
 Create and activate a virtual environment:
 
-1. Create virtual environment:
+#### Create virtual environment
+   
+ - macOS/Linux:
 
    ```bash
-   python -m venv venv
+   pyenv virtualenv 3.x.x myenv
    ```
-2. Activate virtual environment:
 
-   - Windows:
-     ```bash
-     .\venv\Scripts\activate
-     ```
-   - macOS/Linux:
-     ```bash
-     source venv/bin/activate
-     ```
+ - Windows (PowerShell):
+   
+   ```powershell
+   pyenv-win virtualenv 3.x.x myenv
+   ```
 
-### 4. Install Dependencies
+#### Activate virtual environment
+
+- macOS/Linux:
+
+  ```bash
+  pyenv activate myenv
+  ```
+
+- Windows (PowerShell):
+  
+  ```powershell
+  pyenv shell myenv
+  ```
+
+#### To deactivate when you're done
+
+- macOS/Linux:
+  
+  ```bash
+  pyenv deactivate
+  ```
+
+- Windows (PowerShell):
+
+  ```powershell
+  pyenv shell system
+  ```
+
+### Install Dependencies
 
 Install required packages:
 
@@ -141,7 +122,7 @@ Install required packages:
 pip install -r requirements.txt
 ```
 
-### 5. Running the Dashboard
+### Running the Dashboard
 
 ```bash
 cd dashboard
