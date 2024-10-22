@@ -35,6 +35,7 @@ View my deployed [streamlit dashboard](https://dashboardp-95sy2cdcc2winr5kkhqgbm
 ```
 
 ## Prerequisites
+
 - [Git](https://git-scm.com/downloads)
 - [pyenv](https://github.com/pyenv/pyenv)
 - Python3
@@ -55,18 +56,21 @@ cd Data-Analytics-Project
 #### Install pyenv (if not already installed)
 
 Linux:
-    
+
 ```bash
 curl https://pyenv.run | bash
 ```
+
 Windows: [Here](https://github.com/pyenv-win/pyenv-win)
 
 macOS: [Here](https://github.com/pyenv/pyenv?tab=readme-ov-file#homebrew-in-macos)
-   
+
 #### Set up shell environment for Pyenv
+
 [Here](https://github.com/pyenv/pyenv?tab=readme-ov-file#set-up-your-shell-environment-for-pyenv)
 
 #### Install Python3 version
+
 [Here](https://github.com/pyenv/pyenv?tab=readme-ov-file#install-additional-python-versions)
 
 ### Virtual Environment Setup
@@ -74,15 +78,15 @@ macOS: [Here](https://github.com/pyenv/pyenv?tab=readme-ov-file#homebrew-in-maco
 Create and activate a virtual environment:
 
 #### Create virtual environment
-   
- - macOS/Linux:
+
+- macOS/Linux:
 
    ```bash
    pyenv virtualenv 3.x.x myenv
    ```
 
- - Windows (PowerShell):
-   
+- Windows (PowerShell):
+
    ```powershell
    pyenv-win virtualenv 3.x.x myenv
    ```
