@@ -1,6 +1,6 @@
 # Data Analysis Project
 
-This repository contains a data analytics project analyzing public e-commerce data and a Streamlit dashboard.
+This repository contains a data analysis project analyzing public e-commerce data and a Streamlit dashboard.
 
 ## Table of Contents
 
@@ -45,7 +45,7 @@ This repository contains a data analytics project analyzing public e-commerce da
 Clone this repository to local machine.
 
 ```bash
-git clone https://github.com/fxrdhan/Data-Analytics-Project.git
+git clone https://github.com/fxrdhan/Data-Analysis-Project.git
 cd Data-Analytics-Project
 ```
 
