@@ -60,7 +60,7 @@ def create_daily_orders_status_df(df):
 
 # Load and prepare data
 all_df = pd.read_csv(
-    "https://media.githubusercontent.com/media/fxrdhan/Data-Analytics-Project/refs/heads/main/e-commerce_public_dataset/all_df_cleaned.csv"
+    "https://media.githubusercontent.com/media/fxrdhan/Data-Analysis-Project/refs/heads/main/e-commerce_public_dataset/all_df_cleaned.csv"
 )
 
 datetime_columns = ["order_date", "shipping_limit_date"]
@@ -109,7 +109,7 @@ st.markdown(
 
 # Sidebar configuration
 with st.sidebar:
-    st.image("https://github.com/fxrdhan/Data-Analytics-Project/blob/main/dashboard/pngwing.com.png?raw=true", width=200)
+    st.image("https://github.com/fxrdhan/Data-Analysis-Project/blob/main/dashboard/pngwing.com.png?raw=true", width=200)
     start_date, end_date = st.date_input(
         label="Date Range",
         min_value=min_date,
@@ -232,6 +232,7 @@ sns.barplot(
     y="product_category_name",
     data=sum_order_items_df.head(5),
     palette=colors,
+    hue="product_category_name",
     ax=ax[0],
 )
 ax[0].set_facecolor("#0E1117")
@@ -250,6 +251,7 @@ sns.barplot(
     y="product_category_name",
     data=sum_order_items_df.sort_values(by="order_item_id", ascending=True).head(5),
     palette=colors,
+    hue="product_category_name",
     ax=ax[1],
 )
 ax[1].set_facecolor("#0E1117")
@@ -293,6 +295,7 @@ sns.barplot(
     x="customer_id",
     data=rfm_df.sort_values(by="recency", ascending=True).head(5),
     palette=colors,
+    hue="customer_id",
     ax=ax[0],
 )
 ax[0].set_facecolor("#0E1117")
@@ -312,6 +315,7 @@ sns.barplot(
     x="customer_id",
     data=rfm_df.sort_values(by="frequency", ascending=False).head(5),
     palette=colors,
+    hue="customer_id",
     ax=ax[1],
 )
 ax[1].set_facecolor("#0E1117")
@@ -331,6 +335,7 @@ sns.barplot(
     x="customer_id",
     data=rfm_df.sort_values(by="monetary", ascending=False).head(5),
     palette=colors,
+    hue="customer_id",
     ax=ax[2],
 )
 ax[2].set_facecolor("#0E1117")
