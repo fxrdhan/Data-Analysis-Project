@@ -1,4 +1,7 @@
 # %% [markdown]
+# <a target="_blank" href="https://colab.research.google.com/github/fxrdhan/Data-Analytics-Project/blob/main/notebook.ipynb">
+#   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+# </a>
 # 
 
 # %% [markdown]
@@ -7,16 +10,19 @@
 # - **Nama:** Firdaus Arif Ramadhani
 # - **Email:** firdausarief65@gmail.com
 # - **ID Dicoding:** 2VX3464E3ZYQ
+# 
 
 # %% [markdown]
 # ## Menentukan Pertanyaan Bisnis
+# 
 
 # %% [markdown]
-# 1. Apa faktor utama yang menyebabkan pembatalan pesanan?
-# 2. Bagaimana pengaruh interval pengiriman terhadap tingkat kepuasan pelanggan?
-# 3. Kategori produk apa yang paling populer berdasarkan jumlah ulasan?
+# 1. Kategori produk apa saja yang paling laris?
+# 2. Apa faktor utama yang menyebabkan pembatalan pesanan?
+# 3. Bagaimana pengaruh interval pengiriman terhadap tingkat kepuasan pelanggan?
 # 4. Bagaimana performa berbagai kategori produk dalam hal kepuasan pelanggan?
 # 5. Bagaimana tren penjualan bulanan?
+# 
 
 # %% [markdown]
 # ## Import Semua Packages/Library yang Digunakan
@@ -179,7 +185,9 @@ geolocation_df.head()
 # 
 
 # %%
-customers_df = pd.read_csv("https://media.githubusercontent.com/media/fxrdhan/Data-Analytics-Project/refs/heads/main/e-commerce_public_dataset/customers_dataset.csv")
+customers_df = pd.read_csv(
+    "https://media.githubusercontent.com/media/fxrdhan/Data-Analytics-Project/refs/heads/main/e-commerce_public_dataset/customers_dataset.csv"
+)
 customers_df.head()
 
 # %% [markdown]
@@ -844,9 +852,11 @@ canceled_status_df[["order_id", "order_status", "approval_time_diff"]]
 
 # %% [markdown]
 # **Insight:**
+# 
 # - Sebanyak 97% pesanan memiliki status "delivered", menunjukkan bahwa sistem pengiriman berjalan dengan baik dan memiliki tingkat keberhasilan yang tinggi.
 # - Persentase pembatalan hanya sebesar 0,63%, yang menunjukkan bahwa jumlah pesanan yang dibatalkan sangat rendah dibandingkan total pesanan.
 # - Rata-rata waktu persetujuan adalah 10,42 jam, dengan variasi yang cukup besar.
+# 
 
 # %% [markdown]
 # ### Eksplorasi Data `order_reviews_df`
@@ -878,6 +888,7 @@ pd.DataFrame(
 
 # %% [markdown]
 # ### Merge Data `orders_df` dan `order_reviews_df`
+# 
 
 # %%
 order_orders_reviews_df = pd.merge(
@@ -1151,6 +1162,9 @@ all_df = pd.merge(oor_oip_df, order_payments_summary, on="order_id", how="left")
 all_df.head()
 
 # %%
+all_df.info()
+
+# %%
 all_df.describe().round(2).T
 
 # %%
@@ -1193,7 +1207,7 @@ category_revenue_df = (
     .agg(
         total_payment_value=("payment_value", "sum"),
         order_count=("order_id", "nunique"),
-        order_item_count=("order_item_id", "count"), 
+        order_item_count=("order_item_id", "count"),
     )
     .reset_index()
 )
@@ -1225,6 +1239,9 @@ clean_payment_df = pd.DataFrame(
 
 clean_payment_df
 
+# %%
+all_df.to_csv("e-commerce_public_dataset/all_df_cleaned.csv", index=False)
+
 # %% [markdown]
 # **Insight:**\
 # Nilai harga produk (`price`) tertinggi adalah produk dari kategori `housewares` yakni sebesar **6735.0**.\
@@ -1238,56 +1255,141 @@ clean_payment_df
 
 # %% [markdown]
 # ## Visualization & Explanatory Analysis
+# 
+
+# %% [markdown]
+# ### Kategori produk apa saja yang paling laris?
+# 
+
+# %%
+total_orders = len(order_items_products_df["order_id"].unique())
+
+category_orders = (
+    order_items_products_df.groupby("product_category_name")
+    .agg({"order_id": "nunique"})
+    .reset_index()
+)
+
+category_orders.columns = ["product_name", "num_orders"]
+
+category_orders["percentage"] = (
+    category_orders["num_orders"] / total_orders * 100
+).round(2)
+
+category_orders_sorted = category_orders.sort_values("percentage", ascending=False)
+
+top_5_categories = category_orders_sorted.head()
+
+print("Top 5 selling product categories:")
+print(top_5_categories.to_string(index=False))
+
+plt.figure(figsize=(10, 6))
+bars = plt.bar(top_5_categories["product_name"], top_5_categories["percentage"])
+
+for bar in bars[1:]:
+    bar.set_color("lightgray")
+
+plt.title("Top 5 Selling Product Categories", fontsize=14, pad=20)
+plt.xlabel("Product Category", fontsize=12)
+plt.ylabel("Percentage (%)", fontsize=12)
+plt.xticks(rotation=45, ha="right")
+plt.grid(axis="y", linestyle="--", alpha=0.7)
+
+for i, v in enumerate(top_5_categories["percentage"]):
+    plt.text(i, v, f"{v}%", ha="center", va="bottom", fontsize=10)
+
+plt.tight_layout()
+plt.show()
+
+# %% [markdown]
+# **Insight:**
+# 
+# - Kategori **bed_bath_table** memimpin penjualan dengan **9,54%** dari total pesanan.
+# - **Lima kategori teratas menyumbang hampir 40%** dari total pesanan.
+# - **Perbedaan persentase** antara kategori teratas dan terbawah dalam daftar ini **sekitar 3%**.
+# 
 
 # %% [markdown]
 # ### Apa faktor utama yang menyebabkan pembatalan pesanan?
+# 
 
 # %%
+status_df = all_df["order_status"].value_counts().reset_index()
+status_df.columns = ["Order Status", "Count"]
+
+colors = [
+    "#6EACC9",
+    "#4986A7",
+    "#105D8A",
+    "#0F4C75",
+    "#1B4965",
+    "#2B5F82",
+    "#133E62",
+    "#083358",
+    "#0A2647",
+    "#001B48",
+]
+
+plt.figure(figsize=(10, 8))
+plt.pie(status_df["Count"], labels=None, colors=colors, startangle=90)
+plt.title("Order Status Distribution", fontsize=14, pad=20, weight="bold")
+
+legend = plt.legend(
+    status_df.index,
+    title="Order Statuses",
+    loc="center left",
+    bbox_to_anchor=(1, 0, 0.5, 1),
+)
+legend.get_frame().set_alpha(0)
+
+plt.axis("equal")
+
+plt.tight_layout()
+plt.show()
+
+print(status_df)
+
+# %%
+translations = {
+    "portateis_cozinha_e_preparadores_de_alimentos": "kitchen_appliances",
+}
+
 canceled_by_category = (
     all_df[all_df["order_status"] == "canceled"].groupby("product_category_name").size()
 )
 total_by_category = all_df.groupby("product_category_name").size()
-
 cancellation_rate = (
     (canceled_by_category / total_by_category * 100)
     .sort_values(ascending=False)
-    .head(10)
+    .head(5)
 )
 
-plt.figure(figsize=(12, 6))
-ax = cancellation_rate.plot(kind="bar")
+cancellation_rate.index = cancellation_rate.index.map(lambda x: translations.get(x, x))
+
+plt.figure(figsize=(10, 6))
+bars = cancellation_rate.plot(kind="bar", width=0.8, color="lightgray")
+ax = plt.gca()
 
 plt.title(
-    "Top 10 Product Categories with Highest Cancellation Rates", fontsize=16, pad=20
+    "Top 5 Product Categories with Highest Cancellation Rates", fontsize=14, pad=20
 )
 plt.xlabel("Product Category", fontsize=12)
 plt.ylabel("Cancellation Rate (%)", fontsize=12)
-
 plt.xticks(rotation=45, ha="right")
 
-ax.grid(
-    True,
-    which="both",
-    axis="both",
-    linestyle="--",
-    linewidth=0.5,
-    color="gray",
-    alpha=0.7,
-)
-ax.set_axisbelow(True)
+plt.grid(axis="y", linestyle="--", alpha=0.7)
+plt.gca().set_axisbelow(True)
 
-ax.yaxis.set_major_locator(plt.MultipleLocator(5))
-ax.yaxis.set_minor_locator(plt.MultipleLocator(1))
+highest_bar = bars.patches[0]
+highest_bar.set_color("#1f77b4")
 
 for i, v in enumerate(cancellation_rate):
-    ax.text(i, v + 0.5, f"{v:.2f}%", ha="center", va="bottom")
+    ax.text(i, v, f"{v:.2f}%", ha="center", va="bottom", fontsize=10)
 
 plt.tight_layout()
 plt.show()
 
 # %%
-import matplotlib.pyplot as plt
-
 canceled_payment_methods = all_df[all_df["order_status"] == "canceled"][
     "payment_type"
 ].value_counts()
@@ -1566,9 +1668,11 @@ create_wordcloud(shipping_keywords, "Shipping Issue Keywords")
 # - Dari sisi pembayaran, "kartu kredit" mendominasi metode yang digunakan dalam pesanan yang dibatalkan, mencakup **77.7%** dari total. Hal ini bisa saja mencerminkan **kemudahan pembatalan** dan **kecenderungan pembelian impulsif** dengan kartu kredit.
 # - Faktor yang paling signifikan dalam pembatalan pesanan adalah **masalah pengiriman**, yang menyumbang **72.17%** dari alasan pembatalan berdasarkan ulasan pelanggan. Diikuti oleh **masalah layanan pelanggan (8.62%)** dan **kualitas produk (3.45%)**.
 # - Kata paling sering yang muncul dalam masalah pengiriman adalah **"delay"**, yang menunjukkan bahwa masalah pengiriman disebabkan oleh **keterlambatan**.
+# 
 
 # %% [markdown]
 # ### Bagaimana pengaruh interval pengiriman terhadap tingkat kepuasan pelanggan?
+# 
 
 # %%
 prepared_df = order_orders_reviews_df.copy()
@@ -1609,15 +1713,15 @@ data_matrix = prepared_df.pivot_table(
 )
 sns.heatmap(
     data_matrix,
-    cmap=sns.cubehelix_palette(as_cmap=True),
+    cmap=sns.color_palette("ch:start=.2,rot=-.3", as_cmap=True),
     annot=True,
     fmt="d",
     cbar_kws={"label": "Count"},
 )
 
-plt.title("Review Score Distribution by Delivery Time Interval")
-plt.xlabel("Review Score")
-plt.ylabel("Delivery Time Interval (days)")
+plt.title("Review Score Distribution by Delivery Time Interval", fontsize=14, pad=20)
+plt.xlabel("Review Score", fontsize=12)
+plt.ylabel("Delivery Time Interval (days)", fontsize=12, labelpad=10)
 
 plt.tight_layout()
 plt.show()
@@ -1638,13 +1742,13 @@ avg_scores = (
 
 plt.figure(figsize=(12, 6))
 plt.plot(avg_scores["delivery_interval"], avg_scores["review_score"], marker="o")
-plt.title("Average Review Score Trend by Delivery Time Interval")
-plt.xlabel("Delivery Time Interval (days)")
-plt.ylabel("Average Review Score")
+plt.title("Average Review Score Trend by Delivery Time Interval", fontsize=14, pad=20)
+plt.xlabel("Delivery Time Interval (days)", fontsize=12)
+plt.ylabel("Average Review Score", fontsize=12)
 plt.ylim(1, 5)
 
 plt.grid(
-    visible=True, which="both", linestyle="-", linewidth=0.5, color="gray", alpha=0.5
+    visible=True, which="both", linestyle="--", linewidth=0.5, color="gray", alpha=0.5
 )
 plt.yticks([1, 2, 3, 4, 5])
 plt.minorticks_on()
@@ -1667,55 +1771,36 @@ plt.show()
 # **Insight:**
 # 
 # - **Kecepatan pengiriman** memiliki **dampak signifikan** terhadap **kepuasan pelanggan**.
-#     - **Pengiriman yang lebih cepat** cenderung menghasilkan **ulasan yang lebih positif**.
-#     - **Skor ulasan rata-rata tertinggi (4,50)** dicapai untuk **pengiriman yang diselesaikan dalam 1-2 hari**.
+#   - **Pengiriman yang lebih cepat** cenderung menghasilkan **ulasan yang lebih positif**.
+#   - **Skor ulasan rata-rata tertinggi (4,50)** dicapai untuk **pengiriman yang diselesaikan dalam 1-2 hari**.
 # - Terdapat **penurunan bertahap** dalam **skor ulasan seiring** bertambahnya **waktu pengiriman**.
-#     - Penurunan drastis terlihat untuk pengiriman yang memakan waktu lebih dari 15 hari.
+#   - Penurunan drastis terlihat untuk pengiriman yang memakan waktu lebih dari 15 hari.
 # - **Pengiriman yang sangat lama (30-60 dan 60+ hari)** menerima **skor ulasan terendah**.
-#     - Skor rata-rata hanya **2,26** untuk pengiriman **30-60 hari**.
-#     - Skor rata-rata bahkan lebih rendah, yaitu **2,14**, untuk pengiriman yang memakan waktu **lebih dari 60 hari**.
-
-# %% [markdown]
-# ### Kategori produk apa yang paling populer berdasarkan jumlah ulasan?
-
-# %%
-category_reviews = (
-    all_df.groupby("product_category_name")["review_id"]
-    .count()
-    .sort_values(ascending=False)
-)
-total_reviews = category_reviews.sum()
-category_reviews_percent = (category_reviews / total_reviews * 100).round(2)
-top_10 = category_reviews_percent.head(10)
-
-plt.figure(figsize=(12, 6))
-sns.barplot(x=top_10.index, y=top_10.values)
-plt.title("Top 10 Product Categories by Number of Reviews")
-plt.xlabel("Product Category")
-plt.ylabel("Percentage of Total Reviews")
-plt.xticks(rotation=45, ha="right")
-
-for i, v in enumerate(top_10.values):
-    plt.text(i, v, f"{v}%", ha="center", va="bottom")
-
-plt.tight_layout()
-plt.show()
-
-# %% [markdown]
-# **Insight:**
+#   - Skor rata-rata hanya **2,26** untuk pengiriman **30-60 hari**.
+#   - Skor rata-rata bahkan lebih rendah, yaitu **2,14**, untuk pengiriman yang memakan waktu **lebih dari 60 hari**.
 # 
-# - Kategori **bed_bath_table** adalah yang **paling populer**, menyumbang **9,91%** dari total ulasan.
-# - **Lima kategori teratas menyumbang hampir 40%** dari seluruh ulasan.
-# - Kategori-kategori terkait gaya hidup dan perawatan diri (**bed_bath_table, health_beauty, sports_leisure**) mendominasi **tiga posisi teratas**, menunjukkan **fokus konsumen pada kenyamanan dan kesehatan**.
 
 # %% [markdown]
 # ### Bagaimana performa berbagai kategori produk dalam hal kepuasan pelanggan?
+# 
 
 # %%
 category_reviews_df = (
-    oor_oip_df.groupby("product_category_name")
-    .agg({"review_id": "count", "review_score": "mean"})
-    .rename(columns={"review_id": "Review Count", "review_score": "Average Rating"})
+    all_df.groupby("product_category_name")
+    .agg(
+        {
+            "order_id": "nunique",
+            "review_id": "count",
+            "review_score": "mean",
+        }
+    )
+    .rename(
+        columns={
+            "order_id": "Order Count",
+            "review_id": "Review Count",
+            "review_score": "Average Rating",
+        }
+    )
     .sort_values("Review Count", ascending=False)
 )
 
@@ -1728,7 +1813,7 @@ category_reviews_df["Average Rating"] = category_reviews_df["Average Rating"].ro
 category_reviews_df
 
 # %% [markdown]
-# Dalam menentukan **Best Seller** berdasarkan 5 produk terlaris dapat menggunakan pendekatan ***Bayesian Average Rating***. Metode ini memanfaatkan rumus Bayes untuk mengkalkulasi peringkat yang lebih berimbang. Penghitungannya mempertimbangkan beberapa faktor daiantaranya banyaknya ulasan per produk, nilai rata-rata tiap produk, serta rata-rata penilaian secara menyeluruh.\
+# Dalam menentukan **Best Seller** berdasarkan 5 produk terlaris dapat menggunakan pendekatan **_Bayesian Average Rating_**. Metode ini memanfaatkan rumus Bayes untuk mengkalkulasi peringkat yang lebih berimbang. Penghitungannya mempertimbangkan beberapa faktor daiantaranya banyaknya ulasan per produk, nilai rata-rata tiap produk, serta rata-rata penilaian secara menyeluruh.\
 # Metode ini memberikan penilaian yang lebih tepat, terutama untuk produk-produk dengan jumlah ulasan yang relatif sedikit. Dengan demikian, mendapatkan gambaran yang lebih akurat tentang kualitas dan popularitas produk, tanpa terlalu dipengaruhi oleh perbedaan jumlah ulasan antar produk.
 # 
 # $$
@@ -1740,10 +1825,10 @@ category_reviews_df
 # **_R_** = Peringkat rata-rata produk\
 # **_C_** = Peringkat rata-rata keseluruhan di semua produk\
 # **_m_** = Jumlah minimum ulasan yang diperlukan agar produk dapat dipertimbangkan
+# 
 
 # %%
 C = category_reviews_df["Average Rating"].mean()
-
 m = category_reviews_df["Review Count"].quantile(0.75)
 
 top_5_products = category_reviews_df.head(5).index.tolist()
@@ -1758,32 +1843,36 @@ bayesian_ratings = (
 
 pd.DataFrame(
     {
-        # "product_category_name": top_5_products,
-        # "Review Count": category_reviews_df.loc[top_5_products, "Review Count"],
-        # "Average Rating": category_reviews_df.loc[top_5_products, "Average Rating"],
-        # "Percentage": category_reviews_df.loc[top_5_products, "Percentage"],
+        "Order Count": category_reviews_df.loc[top_5_products, "Order Count"],
+        "Review Count": category_reviews_df.loc[top_5_products, "Review Count"],
+        "Average Rating": category_reviews_df.loc[top_5_products, "Average Rating"],
         "Bayesian Average Rating": bayesian_ratings,
     }
 ).sort_values(by="Bayesian Average Rating", ascending=False)
 
 # %%
-bayesian_ratings_df = pd.DataFrame(
-    {
-        "product_category_name": top_5_products,
-        "Bayesian Average Rating": bayesian_ratings,
-    }
-).sort_values(by="Bayesian Average Rating", ascending=False)
-
 plt.figure(figsize=(12, 6))
+
+colors = ["#CCCCCC"] * len(bayesian_ratings)
+colors[0] = sns.color_palette()[0]
+
 sns.barplot(
-    x="Bayesian Average Rating", y="product_category_name", data=bayesian_ratings_df
+    x="Bayesian Average Rating",
+    y="product_category_name",
+    data=bayesian_ratings,
+    palette=colors,
+    hue="product_category_name",
 )
 
-plt.title("Top 5 Product Categories by Bayesian Average Rating", fontsize=16, pad=20)
+plt.title(
+    "Top 5 Best Seller Product Categories\nby Bayesian Average Rating",
+    fontsize=16,
+    pad=20,
+)
 plt.xlabel("Bayesian Average Rating", fontsize=12)
 plt.ylabel("Product Category", fontsize=12)
 
-for i, v in enumerate(bayesian_ratings_df["Bayesian Average Rating"]):
+for i, v in enumerate(bayesian_ratings["Bayesian Average Rating"]):
     plt.text(v, i, f" {v:.2f}", va="center", fontsize=10)
 
 plt.tight_layout()
@@ -1794,9 +1883,11 @@ plt.show()
 # 
 # - Kategori **health_beauty** memiliki performa terbaik dengan Bayesian Average Rating **4.12**, diikuti oleh **sports_leisure** dengan **4.10**.
 # - Perbedaan rating antar kategori teratas relatif kecil (range 0.2), menunjukkan **konsistensi kualitas** di berbagai kategori produk populer.
+# 
 
 # %% [markdown]
 # ### Bagaimana tren penjualan bulanan?
+# 
 
 # %%
 all_df["order_date"] = pd.to_datetime(all_df["order_purchase_timestamp"])
@@ -1820,15 +1911,15 @@ monthly_data["year_month"] = monthly_data["year_month"].astype(str)
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 8))
 
 sns.lineplot(x="year_month", y="price", data=monthly_data, ax=ax1, marker="o")
-ax1.set_title("Revenue Trend", fontsize=16)
-ax1.set_xlabel("Year-Month", fontsize=12)
+ax1.set_title("Revenue Trend", fontsize=16, pad=20)
+ax1.set_xlabel("Year-Month", fontsize=12, labelpad=10)
 ax1.set_ylabel("Revenue", fontsize=12)
 ax1.tick_params(axis="x", rotation=45)
 ax1.grid(True, linestyle="--", alpha=0.7)
 
 sns.lineplot(x="year_month", y="order_id", data=monthly_data, ax=ax2, marker="o")
-ax2.set_title("Order Trend", fontsize=16)
-ax2.set_xlabel("Year-Month", fontsize=12)
+ax2.set_title("Order Trend", fontsize=16, pad=20)
+ax2.set_xlabel("Year-Month", fontsize=12, labelpad=10)
 ax2.set_ylabel("Number of Orders", fontsize=12)
 ax2.tick_params(axis="x", rotation=45)
 ax2.grid(True, linestyle="--", alpha=0.7)
@@ -1849,11 +1940,13 @@ print(top_months_orders[["year_month", "order_id"]])
 # **Insight:**
 # 
 # - Terlihat **lonjakan tajam** pada bulan **November 2017** untuk kedua metrik. Ini menjadi bulan dengan performa tertinggi, baik dari segi **revenue (1,008,127.73)** maupun **jumlah pesanan (8,647)**.
-# - **Lonjakan di bulan November 2017** sangat mungkin berkaitan dengan **event Black Friday**. Di Brasil, Black Friday biasanya **jatuh pada akhir November**, sama seperti di AS. 
+# - **Lonjakan di bulan November 2017** sangat mungkin berkaitan dengan **event Black Friday**. Di Brasil, Black Friday biasanya **jatuh pada akhir November**, sama seperti di AS.
 # - Setelah lonjakan November 2017, bisnis tampaknya mampu mempertahankan level penjualan yang lebih tinggi di bulan-bulan berikutnya dibandingkan periode sebelum November 2017.
+# 
 
 # %% [markdown]
 # ## RFM Analysis
+# 
 
 # %%
 end_date = pd.to_datetime(all_df["order_purchase_timestamp"]).max()
@@ -1900,14 +1993,6 @@ rfm_result.describe()
 rfm_result["RFM_Score"].value_counts()
 
 # %%
-recency_df = rfm_result.sort_values("Recency", ascending=False).head()
-frequency_df = rfm_result.sort_values("Frequency", ascending=False).head()
-monetary_df = rfm_result.sort_values("Monetary", ascending=False).head()
-
-fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(20, 6))
-fig.suptitle("Best Customers Based on RFM Parameters (customer_id)", fontsize=16)
-
-
 def truncate_id(cust_id, max_length=10):
     return (
         str(cust_id)[:max_length] + "..."
@@ -1916,38 +2001,31 @@ def truncate_id(cust_id, max_length=10):
     )
 
 
-ax1.bar(range(len(recency_df)), recency_df["Recency"])
-ax1.set_title("By Recency (days)")
-ax1.set_ylabel("Days since last purchase")
-ax1.set_xticks(range(len(recency_df)))
-ax1.set_xticklabels(
-    [truncate_id(id) for id in recency_df.index], rotation=45, ha="right"
-)
+recency_df = rfm_result.sort_values("Recency", ascending=False).head()
+frequency_df = rfm_result.sort_values("Frequency", ascending=False).head()
+monetary_df = rfm_result.sort_values("Monetary", ascending=False).head()
 
-for i, v in enumerate(recency_df["Recency"]):
-    ax1.text(i, v, f"{v:.0f}", ha="center", va="bottom")
+fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(20, 6))
+fig.suptitle("Best Customers Based on RFM Parameters (customer_id)", fontsize=16)
 
-ax2.bar(range(len(frequency_df)), frequency_df["Frequency"])
-ax2.set_title("By Frequency")
-ax2.set_ylabel("Number of Orders")
-ax2.set_xticks(range(len(frequency_df)))
-ax2.set_xticklabels(
-    [truncate_id(id) for id in frequency_df.index], rotation=45, ha="right"
-)
 
-for i, v in enumerate(frequency_df["Frequency"]):
-    ax2.text(i, v, f"{v:.0f}", ha="center", va="bottom")
+def plot_bar(ax, df, column, title, ylabel):
+    colors = ["#CCCCCC"] * len(df)
+    colors[0] = sns.color_palette()[0]
 
-ax3.bar(range(len(monetary_df)), monetary_df["Monetary"])
-ax3.set_title("By Monetary")
-ax3.set_ylabel("Total Spend")
-ax3.set_xticks(range(len(monetary_df)))
-ax3.set_xticklabels(
-    [truncate_id(id) for id in monetary_df.index], rotation=45, ha="right"
-)
+    ax.bar(range(len(df)), df[column], color=colors)
+    ax.set_title(title)
+    ax.set_ylabel(ylabel)
+    ax.set_xticks(range(len(df)))
+    ax.set_xticklabels([truncate_id(id) for id in df.index], rotation=45, ha="right")
 
-for i, v in enumerate(monetary_df["Monetary"]):
-    ax3.text(i, v, f"{v:.0f}", ha="center", va="bottom")
+    for i, v in enumerate(df[column]):
+        ax.text(i, v, f"{v:.0f}", ha="center", va="bottom")
+
+
+plot_bar(ax1, recency_df, "Recency", "By Recency (days)", "Days since last purchase")
+plot_bar(ax2, frequency_df, "Frequency", "By Frequency", "Number of Orders")
+plot_bar(ax3, monetary_df, "Monetary", "By Monetary", "Total Spend")
 
 plt.tight_layout()
 plt.subplots_adjust(top=0.88, bottom=0.2)
@@ -1955,43 +2033,67 @@ plt.show()
 
 # %% [markdown]
 # #### Segmentasi pelanggan
+# 
 
 # %%
 def rfm_segment(score):
     score = int(score)
     r, f, m = score // 100, (score % 100) // 10, score % 10
-    
+
     if r >= 4 and f >= 1 and m >= 4:
-        return 'Top customers'
+        return "Top customers"
     elif r >= 3 and f >= 1 and m >= 3:
-        return 'High value customer'
+        return "High value customer"
     elif r >= 2 and f >= 1 and m >= 2:
-        return 'Medium value customer'
+        return "Medium value customer"
     elif r >= 2 and f >= 1 and m >= 1:
-        return 'Low value customers'
+        return "Low value customers"
     else:
-        return 'Lost customers'
+        return "Lost customers"
 
-rfm_result['customer_segment'] = rfm_result['RFM_Score'].apply(rfm_segment)
 
-print(rfm_result[['RFM_Score', 'customer_segment']].head(20))
+rfm_result["customer_segment"] = rfm_result["RFM_Score"].apply(rfm_segment)
+
+print(rfm_result[["RFM_Score", "customer_segment"]].head(20))
 
 # %%
-customer_segment_df = rfm_result['customer_segment'].value_counts().reset_index()
-customer_segment_df.columns = ['customer_segment', 'customer_count']
+customer_segment_df = rfm_result["customer_segment"].value_counts().reset_index()
+customer_segment_df.columns = ["customer_segment", "customer_count"]
 print(customer_segment_df)
 
 # %%
-customer_segment_df['customer_segment'] = pd.Categorical(customer_segment_df['customer_segment'], [
-    "Lost customers", "Low value customers", "Medium value customer",
-    "High value customer", "Top customers"
-])
+customer_segment_df["customer_segment"] = pd.Categorical(
+    customer_segment_df["customer_segment"],
+    [
+        "Lost customers",
+        "Low value customers",
+        "Medium value customer",
+        "High value customer",
+        "Top customers",
+    ],
+)
 
-customer_segment_df = customer_segment_df.sort_values('customer_segment')
+customer_segment_df = customer_segment_df.sort_values("customer_segment")
 
 # %%
+max_segment = customer_segment_df.loc[
+    customer_segment_df["customer_count"].idxmax(), "customer_segment"
+]
+
+colors = [
+    "#CCCCCC" if segment != max_segment else sns.color_palette()[0]
+    for segment in customer_segment_df["customer_segment"]
+]
+
 plt.figure(figsize=(12, 6))
-sns.barplot(x="customer_count", y="customer_segment", data=customer_segment_df)
+bar_plot = sns.barplot(
+    x="customer_count",
+    y="customer_segment",
+    data=customer_segment_df,
+    palette=colors,
+    hue="customer_segment",
+)
+
 plt.title("Number of Customers for Each Segment", loc="center", fontsize=16, pad=20)
 plt.ylabel("Customer Segment", fontsize=12)
 plt.xlabel("Number of Customers", fontsize=12)
@@ -2051,23 +2153,24 @@ plt.show()
 # **Insight:**
 # 
 # - Recency:
-#     - 5 pelanggan teratas memiliki rentang recency antara 699-728 hari sejak pembelian terakhir.
-#     - Perbedaan recency antar pelanggan top 5 relatif kecil, hanya berkisar 29 hari.
-#     - **Menunjukkan bahwa pelanggan-pelanggan ini belum melakukan pembelian dalam waktu yang cukup lama (sekitar 2 tahun).**
+#   - 5 pelanggan teratas memiliki rentang recency antara 699-728 hari sejak pembelian terakhir.
+#   - Perbedaan recency antar pelanggan top 5 relatif kecil, hanya berkisar 29 hari.
+#   - **Menunjukkan bahwa pelanggan-pelanggan ini belum melakukan pembelian dalam waktu yang cukup lama (sekitar 2 tahun).**
 # - Frequency:
-#     - **Pelanggan teratas melakukan 22 kali pembelian.**
-#     - Frekuensi pembelian menurun secara bertahap dari 22 ke 15 untuk 5 pelanggan teratas.
-#     - Perbedaan frekuensi pembelian cukup signifikan antara pelanggan teratas (22) dan kelima (15).
+#   - **Pelanggan teratas melakukan 22 kali pembelian.**
+#   - Frekuensi pembelian menurun secara bertahap dari 22 ke 15 untuk 5 pelanggan teratas.
+#   - Perbedaan frekuensi pembelian cukup signifikan antara pelanggan teratas (22) dan kelima (15).
 # - Monetary:
-#     - **Pelanggan teratas memiliki total belanja sebesar 13,440** (dalam satuan mata uang).
-#     - **Terdapat penurunan yang cukup drastis antara pelanggan teratas (13,440) dengan pelanggan kedua (7,160)**.
-#     - Nilai belanja menurun secara bertahap dari pelanggan kedua hingga kelima.
+# 
+#   - **Pelanggan teratas memiliki total belanja sebesar 13,440** (dalam satuan mata uang).
+#   - **Terdapat penurunan yang cukup drastis antara pelanggan teratas (13,440) dengan pelanggan kedua (7,160)**.
+#   - Nilai belanja menurun secara bertahap dari pelanggan kedua hingga kelima.
 # 
 # - Customer Segmentation:
-#     - **Medium value customer** merupakan **segmen pelanggan terbesar** dengan **30,681 pelanggan (31.3% dari total pelanggan)**. Ini menunjukkan bahwa sebagian besar pelanggan memiliki nilai transaksi yang moderat.
-#     - **Lost customers** adalah **segmen terbesar kedua** dengan **24,296 pelanggan (24.8%)**. Ini mengindikasikan bahwa hampir seperempat pelanggan telah berhenti melakukan transaksi.
-#     - **Low value customers** terdiri dari **18,225 pelanggan (18.6%)**. Pelanggan ini berpotensi untuk ditingkatkan nilainya melalui program retensi atau promosi yang tepat.
-#     - **Top customers** hanya mencakup **6.2% dari total pelanggan** dengan 6,090 pelanggan. Segmen ini sangat penting karena kontribusinya yang tinggi terhadap pendapatan, meskipun jumlahnya relatif kecil.
+#   - **Medium value customer** merupakan **segmen pelanggan terbesar** dengan **30,681 pelanggan (31.3% dari total pelanggan)**. Ini menunjukkan bahwa sebagian besar pelanggan memiliki nilai transaksi yang moderat.
+#   - **Lost customers** adalah **segmen terbesar kedua** dengan **24,296 pelanggan (24.8%)**. Ini mengindikasikan bahwa hampir seperempat pelanggan telah berhenti melakukan transaksi.
+#   - **Low value customers** terdiri dari **18,225 pelanggan (18.6%)**. Pelanggan ini berpotensi untuk ditingkatkan nilainya melalui program retensi atau promosi yang tepat.
+#   - **Top customers** hanya mencakup **6.2% dari total pelanggan** dengan 6,090 pelanggan. Segmen ini sangat penting karena kontribusinya yang tinggi terhadap pendapatan, meskipun jumlahnya relatif kecil.
 # 
 
 # %% [markdown]
@@ -2075,19 +2178,20 @@ plt.show()
 # 
 
 # %% [markdown]
-# 1. Apa faktor utama yang menyebabkan pembatalan pesanan?\
-# Faktor utama yang menyebabkan pembatalan pesanan adalah masalah pengiriman, yang mencakup 72.17% dari total alasan pembatalan. Keterlambatan pengiriman merupakan penyebab terbesar, dengan kata "delay" muncul paling sering dalam ulasan pelanggan. Selain itu, produk dengan spesifikasi teknis yang kompleks dan harga tinggi seperti "PC Gamer" juga lebih rentan dibatalkan, serta metode pembayaran dengan kartu kredit lebih sering digunakan dalam pesanan yang dibatalkan (77.7%), yang mungkin terkait dengan kemudahan pembatalan dan perilaku pembelian impulsif.
+# 1. Kategori produk apa saja yang paling laris?\
+#    Kategori bed_bath_table menjadi yang paling laris, diikuti oleh produk-produk kesehatan dan kecantikan. Ini menunjukkan bahwa konsumen cenderung lebih banyak membeli produk-produk untuk kebutuhan rumah tangga dan perawatan diri.
 # 
-# 2. Bagaimana pengaruh interval pengiriman terhadap tingkat kepuasan pelanggan?\
-# Kecepatan pengiriman memiliki dampak yang signifikan terhadap kepuasan pelanggan. Pengiriman cepat (1-2 hari) menghasilkan ulasan dengan skor rata-rata tertinggi 4.50, sementara pengiriman yang memakan waktu lebih lama menyebabkan penurunan skor secara bertahap. Pengiriman 30-60 hari hanya mendapat skor rata-rata 2.26, sedangkan pengiriman lebih dari 60 hari memperoleh skor lebih rendah lagi, yaitu 2.14. Ini menunjukkan bahwa pengiriman lambat memiliki korelasi kuat dengan ulasan negatif.
+# 2. Apa faktor utama yang menyebabkan pembatalan pesanan?\
+#    Faktor utama yang menyebabkan pembatalan pesanan adalah masalah pengiriman, yang mencakup 72.17% dari total alasan pembatalan. Keterlambatan pengiriman merupakan penyebab terbesar, dengan kata "delay" muncul paling sering dalam ulasan pelanggan. Selain itu, produk dengan spesifikasi teknis yang kompleks dan harga tinggi seperti "PC Gamer" juga lebih rentan dibatalkan, serta metode pembayaran dengan kartu kredit lebih sering digunakan dalam pesanan yang dibatalkan (77.7%), yang mungkin terkait dengan kemudahan pembatalan dan perilaku pembelian impulsif.
 # 
-# 3. Kategori produk apa yang paling populer berdasarkan jumlah ulasan?\
-# Kategori bed_bath_table adalah yang paling populer, mencakup 9.91% dari total ulasan. Secara keseluruhan, lima kategori teratas (termasuk health_beauty dan sports_leisure) menyumbang hampir 40% dari total ulasan, menunjukkan bahwa konsumen sangat fokus pada produk-produk terkait kenyamanan dan kesehatan.
+# 3. Bagaimana pengaruh interval pengiriman terhadap tingkat kepuasan pelanggan?\
+#    Kecepatan pengiriman memiliki dampak yang signifikan terhadap kepuasan pelanggan. Pengiriman cepat (1-2 hari) menghasilkan ulasan dengan skor rata-rata tertinggi 4.50, sementara pengiriman yang memakan waktu lebih lama menyebabkan penurunan skor secara bertahap. Pengiriman 30-60 hari hanya mendapat skor rata-rata 2.26, sedangkan pengiriman lebih dari 60 hari memperoleh skor lebih rendah lagi, yaitu 2.14. Ini menunjukkan bahwa pengiriman lambat memiliki korelasi kuat dengan ulasan negatif.
 # 
 # 4. Bagaimana performa berbagai kategori produk dalam hal kepuasan pelanggan?\
-# Kategori health_beauty mencatat performa terbaik dalam hal kepuasan pelanggan dengan Bayesian Average Rating 4.12, diikuti oleh sports_leisure dengan 4.10. Perbedaan antar kategori teratas cukup kecil, mencerminkan konsistensi kualitas di berbagai kategori produk populer.
+#    Kategori health_beauty mencatat performa terbaik dalam hal kepuasan pelanggan dengan Bayesian Average Rating 4.12, diikuti oleh sports_leisure dengan 4.10. Perbedaan antar kategori teratas cukup kecil, mencerminkan konsistensi kualitas di berbagai kategori produk populer.
 # 
 # 5. Bagaimana tren penjualan bulanan?\
-# Terdapat lonjakan signifikan dalam penjualan pada November 2017, baik dari sisi pendapatan (1,008,127.73 dalam mata uang Brazil) maupun jumlah pesanan (8,647), yang kemungkinan besar dipicu oleh event Black Friday. Setelah itu, level penjualan cenderung stabil dan lebih tinggi dibandingkan periode sebelum November 2017, menunjukkan dampak positif dari momentum Black Friday terhadap tren penjualan bisnis.
+#    Terdapat lonjakan signifikan dalam penjualan pada November 2017, baik dari sisi pendapatan (1,008,127.73 dalam mata uang Brazil) maupun jumlah pesanan (8,647), yang kemungkinan besar dipicu oleh event Black Friday. Setelah itu, level penjualan cenderung stabil dan lebih tinggi dibandingkan periode sebelum November 2017, menunjukkan dampak positif dari momentum Black Friday terhadap tren penjualan bisnis.
+# 
 
 
