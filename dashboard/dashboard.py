@@ -7,6 +7,7 @@ from babel.numbers import format_currency
 sns.set_style("darkgrid", {"axes.facecolor": ".2", "grid.color": ".6"})
 plt.style.use("dark_background")
 
+
 def create_daily_orders_df(df):
     # Aggregate daily orders and revenue
     daily_orders_df = df.resample(rule="D", on="order_date").agg(
@@ -18,6 +19,7 @@ def create_daily_orders_df(df):
     )
     return daily_orders_df
 
+
 def create_sum_order_items_df(df):
     # Calculate total orders per product category
     sum_order_items_df = (
@@ -27,6 +29,7 @@ def create_sum_order_items_df(df):
         .reset_index()
     )
     return sum_order_items_df
+
 
 def create_rfm_df(df):
     # Calculate RFM metrics per customer
@@ -43,6 +46,7 @@ def create_rfm_df(df):
     rfm_df.drop("max_order_timestamp", axis=1, inplace=True)
     return rfm_df
 
+
 def create_daily_orders_status_df(df):
     # Create pivot table of daily order status counts
     daily_status_df = (
@@ -52,6 +56,7 @@ def create_daily_orders_status_df(df):
         index="order_date", columns="order_status", values="count"
     ).fillna(0)
     return daily_status_pivot
+
 
 # Load and prepare data
 all_df = pd.read_csv(
@@ -157,48 +162,46 @@ ax.grid(True, alpha=0.2)
 st.pyplot(fig)
 
 # Order status analysis
-st.subheader('Daily Orders Status')
+st.subheader("Daily Orders Status")
 daily_status_df = create_daily_orders_status_df(main_df)
 
 # Status colors for consistency
 status_colors = {
-    'delivered': '#00CED1',
-    'shipped': '#FFD700',
-    'canceled': '#FF6B6B',
-    'approved': '#98FB98',
-    'invoiced': '#DDA0DD',
-    'processing': '#87CEEB',
-    'unavailable': '#D3D3D3'
+    "delivered": "#00CED1",
+    "shipped": "#FFD700",
+    "canceled": "#FF6B6B",
+    "approved": "#98FB98",
+    "invoiced": "#DDA0DD",
+    "processing": "#87CEEB",
+    "unavailable": "#D3D3D3",
 }
 
 # Order status stacked area chart
-fig, ax = plt.subplots(figsize=(16, 8), facecolor='#0E1117')
-ax.set_facecolor('#0E1117')
+fig, ax = plt.subplots(figsize=(16, 8), facecolor="#0E1117")
+ax.set_facecolor("#0E1117")
 
 daily_status_df.plot(
-    kind='area', 
+    kind="area",
     stacked=True,
     ax=ax,
-    color=[status_colors.get(status.lower(), '#333333') for status in daily_status_df.columns],
-    alpha=0.7
+    color=[
+        status_colors.get(status.lower(), "#333333")
+        for status in daily_status_df.columns
+    ],
+    alpha=0.7,
 )
 
-ax.set_title('Daily Orders by Status', pad=20, color='white', fontsize=20)
-ax.set_xlabel('Date', color='white', fontsize=12)
-ax.set_ylabel('Number of Orders', color='white', fontsize=12)
-ax.tick_params(axis='x', colors='white', labelsize=10)
-ax.tick_params(axis='y', colors='white', labelsize=10)
-ax.spines['bottom'].set_color('white')
-ax.spines['top'].set_color('white')
-ax.spines['left'].set_color('white')
-ax.spines['right'].set_color('white')
+ax.set_title("Daily Orders by Status", pad=20, color="white", fontsize=20)
+ax.set_xlabel("Date", color="white", fontsize=12)
+ax.set_ylabel("Number of Orders", color="white", fontsize=12)
+ax.tick_params(axis="x", colors="white", labelsize=10)
+ax.tick_params(axis="y", colors="white", labelsize=10)
+ax.spines["bottom"].set_color("white")
+ax.spines["top"].set_color("white")
+ax.spines["left"].set_color("white")
+ax.spines["right"].set_color("white")
 ax.grid(True, alpha=0.2)
-ax.legend(
-    bbox_to_anchor=(1.05, 1),
-    loc='upper left',
-    frameon=False,
-    labelcolor='white'
-)
+ax.legend(bbox_to_anchor=(1.05, 1), loc="upper left", frameon=False, labelcolor="white")
 
 plt.tight_layout()
 st.pyplot(fig)
