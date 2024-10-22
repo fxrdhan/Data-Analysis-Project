@@ -105,7 +105,7 @@ This project uses pyenv for Python version management. Follow these steps to set
    Verify installation:
 
    ```bash
-   python --version  # Should show your installed Python version
+   python --version  # Should show installed Python version
    ```
 4. Set local Python version:
 
