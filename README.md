@@ -5,12 +5,6 @@ This repository contains a data analysis project analyzing public e-commerce dat
 View my [notebook](https://github.com/fxrdhan/Data-Analysis-Project/blob/main/notebook.ipynb).\
 View my deployed [streamlit dashboard](https://dashboardpy-dap-dicoding.streamlit.app).
 
-<div align="center">
-  <video src="https://github.com/fxrdhan/Data-Analysis-Project/raw/refs/heads/main/dashboard/dashbaord.mp4" autoplay muted controls>
-  </video>
-  <p>Dashboard Overview</p>
-</div>
-
 ## Table of Contents
 
 - **[Project Structure](#project-structure)**
