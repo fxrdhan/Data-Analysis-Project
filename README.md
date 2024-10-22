@@ -17,6 +17,22 @@ This repository contains a data analytics project analyzing public e-commerce da
 
 ## Project Structure.
 
+```bash
+.
+├── dashboard
+│   ├── dashboard.py
+│   ├── pngwing.com.png
+├── e-commerce_public_dataset
+│   ├── *.csv
+├── notebook.ipynb
+├── README.md
+├── requirements.txt
+├── script.py
+├── url.txt
+└── visualization_output
+    ├── *.png
+```
+
 ## Prerequisites
 
 Before running this project, ensure you have the following installed:
