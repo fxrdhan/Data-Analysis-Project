@@ -50,7 +50,9 @@ def create_rfm_df(df):
 def create_daily_orders_status_df(df):
     # Create pivot table of daily order status counts
     daily_status_df = (
-        df.groupby(["order_purchase_timestamp", "order_status"]).size().reset_index(name="count")
+        df.groupby(["order_purchase_timestamp", "order_status"])
+        .size()
+        .reset_index(name="count")
     )
     daily_status_pivot = daily_status_df.pivot(
         index="order_purchase_timestamp", columns="order_status", values="count"
@@ -122,7 +124,8 @@ with st.sidebar:
 
 # Filter data based on date range
 main_df = all_df[
-    (all_df["order_purchase_timestamp"] >= str(start_date)) & (all_df["order_purchase_timestamp"] <= str(end_date))
+    (all_df["order_purchase_timestamp"] >= str(start_date))
+    & (all_df["order_purchase_timestamp"] <= str(end_date))
 ]
 
 # Prepare dataframes
