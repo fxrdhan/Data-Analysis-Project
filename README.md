@@ -2,7 +2,7 @@
 ## My credential
 <a href="https://www.dicoding.com/certificates/0LZ04668QP65" 
    target="_blank" 
-   class="credential-link" 
+   class="credential-link">
     <img src="https://github.com/fxrdhan/Data-Analysis-Project/blob/main/myCredential.jpg" 
          alt="Dicoding Credential" 
          class="credential-image">
