@@ -1,5 +1,10 @@
 # Data Analysis Project
+Credential:\
+![image](https://www.dicoding.com/dicodingassets/coursecertificate/0d1c3f00d8bb8fe61d54502cf6da64616a7140d1/view)
+Submission rate:\
+![image](https://dicoding-web-img.sgp1.cdn.digitaloceanspaces.com/original/submission-rating-badge/rating-default-5.png)
 
+## About
 This repository contains a data analysis project analyzing public e-commerce data and a Streamlit dashboard.
 
 View my [notebook](https://github.com/fxrdhan/Data-Analysis-Project/blob/main/notebook.ipynb).\
