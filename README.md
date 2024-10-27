@@ -1,5 +1,5 @@
 # Data Analysis Project
-## My credential
+## My Credential
 <a href="https://www.dicoding.com/certificates/0LZ04668QP65" 
    target="_blank" 
    class="credential-link">
