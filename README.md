@@ -1,7 +1,7 @@
 # Data Analysis Project
-Credential:\
-![image](https://www.dicoding.com/dicodingassets/coursecertificate/0d1c3f00d8bb8fe61d54502cf6da64616a7140d1/view)
-Submission rate:\
+## My credential
+![image](https://github.com/fxrdhan/Data-Analysis-Project/blob/main/myCredential.jpg)
+## My submission rate
 ![image](https://dicoding-web-img.sgp1.cdn.digitaloceanspaces.com/original/submission-rating-badge/rating-default-5.png)
 
 ## About
@@ -38,8 +38,6 @@ Dashboard [overview](https://streamable.com/qlvjw3).
 ├── requirements.txt
 ├── script.py
 ├── url.txt
-└── visualization_output
-    ├── *.png
 ```
 
 ## Prerequisites
