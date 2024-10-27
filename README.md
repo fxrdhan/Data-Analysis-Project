@@ -7,7 +7,7 @@
          alt="Dicoding Credential" 
          class="credential-image">
 </a>
-## My submission rate
+### With submission rate:
 ![image](https://dicoding-web-img.sgp1.cdn.digitaloceanspaces.com/original/submission-rating-badge/rating-default-5.png)
 
 ## About
