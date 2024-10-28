@@ -81,7 +81,7 @@ macOS: [Here](https://github.com/pyenv/pyenv?tab=readme-ov-file#homebrew-in-maco
 
 [Here](https://github.com/pyenv/pyenv?tab=readme-ov-file#set-up-your-shell-environment-for-pyenv)
 
-#### Install Python3 version
+#### Install Python3 version (Python 3.12.7 is recommended)
 
 [Here](https://github.com/pyenv/pyenv?tab=readme-ov-file#install-additional-python-versions)
 
