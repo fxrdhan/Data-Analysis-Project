@@ -13,7 +13,7 @@
 ## About
 This repository contains a data analysis project analyzing public e-commerce data and a Streamlit dashboard.
 
-View my notebook on [Colab](https://colab.research.google.com/github/fxrdhan/Data-Analysis-Project/blob/main/notebook.ipynb) or [Kaggle](https://www.kaggle.com/code/fxrdhan/public-e-commerce-data-analysis-project).\
+View my notebook on [Colab](https://colab.research.google.com/github/fxrdhan/Data-Analysis-Project/blob/main/notebook.ipynb).\
 View my deployed dashboard on [Streamlit](https://dashboardpy-dap-dicoding.streamlit.app).\
 Dashboard [screencast](https://streamable.com/qlvjw3) overview.
 
